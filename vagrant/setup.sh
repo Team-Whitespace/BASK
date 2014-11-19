@@ -7,20 +7,22 @@ setup_kafka () {
     wget --quiet -O kafka.tgz $kafka_mirror > /dev/null
     tar xvf kafka.tgz > /dev/null
     rm -f kafka.tgz
-    mv kafka_*/ kafka/
+    mv kafka_*/ /usr/share/kafka/
 }
 
 setup_solr () {
     wget --quiet -O solr.tgz $solr_mirror > /dev/null
     tar xvf solr.tgz > /dev/null
     rm -f solr.tgz
-    mv solr-*/ solr/
-    cp solr/example/lib/ext/* /usr/share/tomcat7/lib/
-    cp solr/dist/solr-*.war /var/lib/tomcat7/webapps/solr.war
-    cp -R solr/example/solr /var/lib/tomcat7
+    mv solr-*/ /usr/share/solr/
+    cd /usr/share/solr/
+    cp example/lib/ext/* /usr/share/tomcat7/lib/
+    cp dist/solr-*.war /var/lib/tomcat7/webapps/solr.war
+    cp -R example/solr /var/lib/tomcat7
     chown -R tomcat7:tomcat7 /var/lib/tomcat7/solr
     cp /vagrant/vagrant/config/tomcat-users.xml /etc/tomcat7/tomcat-users.xml
     service tomcat7 restart
+    cd
 }
 
 setup_baleene () {
