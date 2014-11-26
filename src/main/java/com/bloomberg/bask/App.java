@@ -1,4 +1,4 @@
-package bask;
+package com.bloomberg.bask;
 
 /**
  * Hello world!

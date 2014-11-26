@@ -1,4 +1,4 @@
-package bask;
+package com.bloomberg.bask;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
