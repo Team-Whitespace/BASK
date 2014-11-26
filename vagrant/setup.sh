@@ -25,10 +25,6 @@ setup_solr () {
     cd
 }
 
-setup_baleene () {
-    echo "TODO"
-}
-
 echo "Updating repositories"
 apt-get -y update > /dev/null
 
@@ -47,8 +43,5 @@ setup_solr
 
 echo "Setting up Kafka"
 setup_kafka
-
-echo "Setting up Baleene"
-setup_baleene
 
 echo "Finished!"
