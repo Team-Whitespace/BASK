@@ -1,18 +1,26 @@
 #!/usr/bin/env bash
 
-kafka_mirror=http://mirror.ox.ac.uk/sites/rsync.apache.org/kafka/0.8.1.1/kafka_2.9.1-0.8.1.1.tgz
+kafka_mirror=http://mirror.ox.ac.uk/sites/rsync.apache.org/kafka/0.8.1.1/kafka_2.10-0.8.1.1.tgz
 solr_mirror=http://mirror.ox.ac.uk/sites/rsync.apache.org/lucene/solr/4.10.2/solr-4.10.2.tgz
 
 setup_kafka () {
-    wget --quiet -O kafka.tgz $kafka_mirror > /dev/null
-    tar xvf kafka.tgz > /dev/null
+    wget --quiet -O kafka.tgz $kafka_mirror
+    tar xf kafka.tgz
     rm -f kafka.tgz
     mv kafka_*/ /usr/share/kafka/
+    cd /usr/share/kafka/libs
+    wget --quiet http://www.slf4j.org/dist/slf4j-1.7.7.tar.gz
+    tar -xf slf4j-1.7.7.tar.gz
+    cd slf4j-1.7.7*
+    cp slf4j-api-1.7.7.jar ..
+    cp slf4j-nop-1.7.7.jar ..
+    chown -R vagrant:vagrant /usr/share/kafka
+    cd
 }
 
 setup_solr () {
-    wget --quiet -O solr.tgz $solr_mirror > /dev/null
-    tar xvf solr.tgz > /dev/null
+    wget --quiet -O solr.tgz $solr_mirror
+    tar xf solr.tgz
     rm -f solr.tgz
     mv solr-*/ /usr/share/solr/
     cd /usr/share/solr/
@@ -22,6 +30,7 @@ setup_solr () {
     chown -R tomcat7:tomcat7 /var/lib/tomcat7/solr
     cp /vagrant/vagrant/config/tomcat-users.xml /etc/tomcat7/tomcat-users.xml
     service tomcat7 restart
+    chown -R vagrant:vagrant /usr/share/solr
     cd
 }
 
