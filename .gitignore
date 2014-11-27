@@ -15,3 +15,4 @@ pom.xml.next
 release.properties
 
 luwak/
+lucene-solr/
