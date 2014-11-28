@@ -1,0 +1,10 @@
+language: java
+jdk: openjdk7
+before_install:
+    git clone -b lucene_solr_4_8 https://github.com/bloomberg/lucene-solr.git
+    git clone -b 1.1.x https://github.com/bloomberg/luwak.git
+    mvn install -f lucene-solr/maven-build/pom.xml -DskipTests -B
+    mvn install -f luwak/pom.xml -DskipTests -B
+install: /bin/true
+script: mvn clean install -B
+
