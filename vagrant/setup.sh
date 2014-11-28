@@ -14,6 +14,7 @@ setup_kafka () {
     cd slf4j-1.7.7*
     cp slf4j-api-1.7.7.jar ..
     cp slf4j-nop-1.7.7.jar ..
+    cp /vagrant/vagrant/config/kafka/* /usr/share/kafka/config/
     chown -R vagrant:vagrant /usr/share/kafka
     cd
 }
@@ -41,8 +42,7 @@ echo "Installing software from repositories [this may take a while]"
 apt-get -y install openjdk-7-jre-headless openjdk-7-jdk \
                    tomcat7 tomcat7-admin scala \
                    maven icedtea-7-plugin \
-                   python-software-properties vim git-core curl \
-                   > /dev/null
+                   python-software-properties vim git-core curl
 
 echo "Updating alternatives to Java 7"
 update-java-alternatives -s java-1.7.0-openjdk-amd64
