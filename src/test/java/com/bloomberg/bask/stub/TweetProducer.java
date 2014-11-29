@@ -13,6 +13,9 @@ import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
 import kafka.producer.ProducerConfig;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This simple class is reads tweets from a file and then sends them on
  * to a Kafka queue. It is meant to stand in place for Solr which
@@ -27,6 +30,8 @@ public class TweetProducer {
     private static final String source = "src/test/resources/sample_tweets.json",
                                 topic  = "documents",
                                 broker = "192.168.50.4:9092";
+
+    private final Logger logger = LoggerFactory.getLogger (TweetProducer.class);
 
     public static void main (String[] args) {
         TweetProducer producer = new TweetProducer ();
@@ -48,6 +53,7 @@ public class TweetProducer {
     private void sendJSON (JSONArray jsonArray) throws Exception {
         Producer<String, String> producer = new Producer<String, String> (config ());
         for (int i = 0; i < jsonArray.length (); i++) {
+            logger.debug ("Sending message {}", i);
             String msg = jsonArray.get (i).toString ();
             KeyedMessage<String, String> data = new KeyedMessage<String, String> (topic, msg);
             producer.send (data);
@@ -55,7 +61,7 @@ public class TweetProducer {
         }
         producer.close ();
     }
-    
+
     /**
      * Returns a random number between max and 1
      */
@@ -69,7 +75,7 @@ public class TweetProducer {
             InputStream inputStream = new FileInputStream (source);
             sendJSON (new JSONArray (new JSONTokener (inputStream)));
         } catch (Exception e) {
-            e.printStackTrace ();
+            logger.error ("Unable to send message to Kafka", e);
         }
     }
 }
