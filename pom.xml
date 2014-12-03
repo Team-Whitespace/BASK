@@ -12,7 +12,7 @@
         <luwak.version>1.1.0-lucene48-rc1-SNAPSHOT</luwak.version>
         <junit.version>4.11</junit.version>
         <kafka.version>0.8.1.1</kafka.version>
-        <gson.version>2.3.1</gson.version>
+        <json.version>20140107</json.version>
         <slf4j.version>1.7.7</slf4j.version>
         <jopt.version>4.8</jopt.version>
         <zookeeper.version>3.4.6</zookeeper.version>
@@ -51,6 +51,12 @@
                     <artifactId>jms</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>${json.version}</version>
         </dependency>
 
         <dependency>
