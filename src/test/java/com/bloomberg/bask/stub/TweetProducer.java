@@ -9,6 +9,9 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
+
 import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
 import kafka.producer.ProducerConfig;
@@ -27,15 +30,33 @@ import org.slf4j.LoggerFactory;
  */
 public class TweetProducer {
 
-    private static final String source = "src/test/resources/sample_tweets.json",
-                                topic  = "documents",
-                                broker = "192.168.50.4:9092";
+    private static final String source = "src/test/resources/sample_tweets.json";
+    private String topic, broker;
 
     private final Logger logger = LoggerFactory.getLogger (TweetProducer.class);
 
     public static void main (String[] args) {
-        TweetProducer producer = new TweetProducer ();
+        OptionParser parser = new OptionParser ();
+        parser.accepts (
+            "broker",
+            "The kafka broker in the form of Host:IP"
+        ).withRequiredArg ().ofType (String.class).required ();
+        parser.accepts (
+            "topic",
+            "The topic to send messages to"
+        ).withRequiredArg ().ofType (String.class).required ();
+        OptionSet options = parser.parse (args);
+
+        TweetProducer producer = new TweetProducer (
+            (String) options.valueOf ("broker"),
+            (String) options.valueOf ("topic")
+        );
         producer.run ();
+    }
+
+    public TweetProducer (String broker, String topic) {
+        this.broker = broker;
+        this.topic = topic;
     }
 
     private ProducerConfig config () {
@@ -70,7 +91,7 @@ public class TweetProducer {
         return random.nextInt (max) + 1;
     }
 
-    private void run () {
+    public void run () {
         try {
             InputStream inputStream = new FileInputStream (source);
             sendJSON (new JSONArray (new JSONTokener (inputStream)));
