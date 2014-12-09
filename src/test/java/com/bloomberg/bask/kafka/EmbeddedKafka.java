@@ -1,4 +1,4 @@
-package com.bloomberg.bask.luwak.kafka;
+package com.bloomberg.bask.kafka;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -86,6 +86,3 @@ public class EmbeddedKafka {
         }
     }
 }
-
-
-
