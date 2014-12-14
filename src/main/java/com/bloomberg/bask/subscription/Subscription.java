@@ -1,7 +1,5 @@
 package com.bloomberg.bask.subscription;
 
-import com.bloomberg.bask.subscription.kafka.consumer.ConsumerManager;
-
 import java.io.IOException;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -31,7 +29,7 @@ import uk.co.flax.luwak.matchers.SimpleMatcher;
  */
 public class Subscription {
 
-    private static final Logger logger = LoggerFactory.getLogger (ConsumerManager.class);
+    private static final Logger logger = LoggerFactory.getLogger (Subscription.class);
 
     private Monitor monitor;
 
