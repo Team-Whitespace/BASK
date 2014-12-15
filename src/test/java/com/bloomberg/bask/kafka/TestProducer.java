@@ -6,9 +6,6 @@ import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
 import kafka.producer.ProducerConfig;
 
-/**
- * @author Kiran Hampal
- */
 public class TestProducer {
 
     private String topic, broker;
@@ -21,7 +18,7 @@ public class TestProducer {
         producer = new Producer<String, String> (config ());
     }
     
-    public void sendMesage (String message) throws Exception {
+    public void sendMessage (String message) throws Exception {
         producer.send (new KeyedMessage<String, String> (topic, message));
     }
 
