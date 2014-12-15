@@ -5,10 +5,9 @@ import java.util.Properties;
 
 import kafka.server.KafkaConfig;
 import kafka.server.KafkaServerStartable;
+import kafka.utils.TestUtils;
 
-import org.apache.zookeeper.server.ServerConfig;
-import org.apache.zookeeper.server.ZooKeeperServerMain;
-import org.apache.zookeeper.server.quorum.QuorumPeerConfig;
+import org.apache.curator.test.TestingServer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,72 +16,51 @@ public class EmbeddedKafka {
 
     private static final Logger logger = LoggerFactory.getLogger (EmbeddedKafka.class);
 
-    private KafkaServerStartable kafka;
-    private ZooKeeperServerMainStoppable zooKeeperServer;
-    private ServerConfig serverConfig;
+    private KafkaServerStartable kafkaServer;
+    private TestingServer zkServer;
 
     public void start () {
         try {
-            startZooKeeper (zooKeeperProperties ());
-            startKafka (kafkaProperties ());
+            startZK ();
         } catch (Exception e) {
-            logger.error ("Embedded Kafka/ZooKeeper failed to start", e);
+            logger.error ("ZooKeeper failed to start", e);
         }
+        startKafka ();
     }
 
     public void stop () {
-        kafka.shutdown ();
-        zooKeeperServer.stop ();
-    }
-
-    private void startZooKeeper (Properties props) throws Exception {
-        QuorumPeerConfig qpConfig = new QuorumPeerConfig ();
-        qpConfig.parseProperties (props);
-        serverConfig = new ServerConfig ();
-        serverConfig.readFrom (qpConfig);
-        Thread zkThread = new Thread (new EmbeddedZooKeeper ());
-        zkThread.start ();
-    }
-
-    private void startKafka (Properties props) {
-        kafka = new KafkaServerStartable (new KafkaConfig (props));
-        kafka.startup ();
-    }
-
-    private Properties zooKeeperProperties () {
-        Properties props = new Properties ();
-        props.setProperty ("clientPort", "23548");
-        props.setProperty ("maxClientCnxns", "0");
-        props.setProperty ("dataDir", "/tmp/embedded-zk-logs");
-        return props;
-    }
-
-    private Properties kafkaProperties () {
-        Properties props = new Properties ();
-        props.setProperty ("host.name", "localhost");
-        props.setProperty ("port", "23547");
-        props.setProperty ("broker.id", "547");
-        props.setProperty ("zookeeper.connect", "localhost:23548");
-        props.setProperty ("log.dirs", "/tmp/embedded-kafka-logs");
-        return props;
-    }
-
-    public class EmbeddedZooKeeper implements Runnable {
-
-        public void run () {
-            try {
-                zooKeeperServer = new ZooKeeperServerMainStoppable ();
-                zooKeeperServer.runFromConfig (serverConfig);
-            } catch (IOException e) {
-                logger.error ("Embedded ZooKeeper failed to start", e);
-            }
+        kafkaServer.shutdown ();
+        try {
+            zkServer.stop ();
+        } catch (IOException ie) {
+            logger.error ("ZooKeeper failed to stop", ie);
         }
     }
 
-    public class ZooKeeperServerMainStoppable extends ZooKeeperServerMain {
+    public String getKafkaBrokerString () {
+        return String.format (
+            "%s:%d",
+            kafkaServer.serverConfig ().hostName (),
+            kafkaServer.serverConfig ().port ()
+        );
+    }
 
-        public void stop () {
-            super.shutdown ();
-        }
+    public String getZKConnectString () {
+        return zkServer.getConnectString ();
+    }
+
+    private void startZK () throws Exception {
+        zkServer = new TestingServer (true);
+    }
+
+    private void startKafka () {
+        kafkaServer = new KafkaServerStartable (kafkaConfig ());
+        kafkaServer.startup ();
+    }
+
+    private KafkaConfig kafkaConfig () {
+        Properties props = TestUtils.createBrokerConfigs (1).iterator ().next ();
+        props.put ("zookeeper.connect", getZKConnectString ());
+        return new KafkaConfig (props);
     }
 }

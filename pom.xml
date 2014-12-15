@@ -15,6 +15,7 @@
         <json.version>20140107</json.version>
         <slf4j.version>1.7.7</slf4j.version>
         <jopt.version>4.8</jopt.version>
+        <curator.version>2.7.0</curator.version>
         <zookeeper.version>3.4.6</zookeeper.version>
     </properties>
 
@@ -54,6 +55,14 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka_2.10</artifactId>
+            <version>${kafka.version}</version>
+            <classifier>test</classifier>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>${json.version}</version>
@@ -64,7 +73,7 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>net.sf.jopt-simple</groupId>
             <artifactId>jopt-simple</artifactId>
@@ -75,6 +84,13 @@
 	        <groupId>org.apache.zookeeper</groupId>
 	        <artifactId>zookeeper</artifactId>
 	        <version>${zookeeper.version}</version>
+        </dependency>
+
+        <dependency>
+	        <groupId>org.apache.curator</groupId>
+	        <artifactId>curator-test</artifactId>
+            <scope>test</scope>
+            <version>${curator.version}</version>
         </dependency>
 
     </dependencies>
