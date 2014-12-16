@@ -1,4 +1,4 @@
-package com.bloomberg.bask.stub;
+package com.bloomberg.bask.subscription.kafka.producer;
 
 import java.io.FileReader;
 import java.io.BufferedReader;

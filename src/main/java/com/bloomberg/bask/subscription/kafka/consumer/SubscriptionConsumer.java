@@ -1,6 +1,7 @@
 package com.bloomberg.bask.subscription.kafka.consumer;
 
 import com.bloomberg.bask.subscription.Subscription;
+import com.bloomberg.bask.subscription.kafka.producer.SubscriptionProducer;
 
 import kafka.consumer.ConsumerIterator;
 import kafka.consumer.KafkaStream;
@@ -14,10 +15,17 @@ public abstract class SubscriptionConsumer implements Runnable {
 
     protected KafkaStream<String, String> stream;
     protected Subscription subscription;
+    protected SubscriptionProducer producer;
 
-    public SubscriptionConsumer (KafkaStream stream, Subscription subscription) {
+    public SubscriptionConsumer (
+        KafkaStream stream,
+        Subscription subscription,
+        String broker,
+        String topic
+    ) {
         this.stream = stream;
         this.subscription = subscription;
+        producer = new SubscriptionProducer (broker, topic);
     }
 
     /**

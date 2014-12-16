@@ -38,12 +38,18 @@ public class ConsumerManager {
     private Subscription subscription;
     private ExecutorService executor;
     private ConsumerConnector consumer;
-    private String zkConnect, groupID;
+    private String zkConnect, groupID, broker;
 
-    public ConsumerManager (Subscription subscription, String zkConnect, String groupID) {
+    public ConsumerManager (
+        Subscription subscription,
+        String zkConnect,
+        String groupID,
+        String broker
+    ) {
         this.subscription = subscription;
         this.zkConnect = zkConnect;
         this.groupID = groupID;
+        this.broker = broker;
     }
 
     /*/
@@ -92,7 +98,7 @@ public class ConsumerManager {
         ExecutorService executor
     ) {
         for (final KafkaStream stream : streams) {
-            executor.submit (new TweetConsumer (stream, subscription));
+            executor.submit (new TweetConsumer (stream, subscription, broker));
         }
     }
 
@@ -101,7 +107,7 @@ public class ConsumerManager {
         ExecutorService executor
     ) {
     	for (final KafkaStream stream : streams) {
-            executor.submit (new AlertConsumer (stream, subscription));
+            executor.submit (new AlertConsumer (stream, subscription, broker));
         }
     }
 }
