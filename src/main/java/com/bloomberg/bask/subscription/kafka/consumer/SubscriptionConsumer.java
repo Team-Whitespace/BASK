@@ -20,12 +20,11 @@ public abstract class SubscriptionConsumer implements Runnable {
     public SubscriptionConsumer (
         KafkaStream stream,
         Subscription subscription,
-        String broker,
         String topic
     ) {
         this.stream = stream;
         this.subscription = subscription;
-        producer = new SubscriptionProducer (broker, topic);
+        producer = new SubscriptionProducer (topic);
     }
 
     /**

@@ -1,50 +1,35 @@
 package com.bloomberg.bask.subscription.kafka.producer;
 
-import java.io.FileReader;
-import java.io.BufferedReader;
-import java.util.Properties;
+import com.bloomberg.bask.kafka.BASKProducer;
+import com.bloomberg.bask.kafka.DefaultProducerConfig;
+import com.bloomberg.bask.kafka.UnconfiguredProducerException;
+
+import java.io.IOException;
 
 import org.json.JSONObject;
-
-import joptsimple.OptionParser;
-import joptsimple.OptionSet;
-
-import kafka.javaapi.producer.Producer;
-import kafka.producer.KeyedMessage;
-import kafka.producer.ProducerConfig;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SubscriptionProducer {
+public class SubscriptionProducer extends BASKProducer<String, String> {
 
-    private final Logger logger = LoggerFactory.getLogger (SubscriptionProducer.class);
+    private static final Logger logger = LoggerFactory.getLogger (SubscriptionProducer.class);
 
-    private String topic, broker;
-
-    private Producer<String,String> producer;
-
-    public SubscriptionProducer (String broker, String topic) {
-        this.broker = broker;
-        this.topic = topic;
-        producer = new Producer<String, String> (config ());
+    public SubscriptionProducer (String topic) {
+        super (topic);
+        try {
+            loadConfig ("/subscription.producer.properties");
+        } catch (IOException ie) {
+            logger.warn ("Could not read subscription.producer.properties. Using default config...");
+            loadConfig (new DefaultProducerConfig ());
+        }
     }
 
     public void sendMessage (JSONObject data) {
-        logger.info ("Sent message to {}: {}", topic, data.toString ());
-        producer.send (new KeyedMessage<String, String> (topic, data.toString ()));
-    }
-
-    public void shutdown () {
-        producer.close ();
-    }
-
-    private ProducerConfig config () {
-        Properties props = new Properties ();
-        props.put ("metadata.broker.list", broker);
-        props.put ("serializer.class", "kafka.serializer.StringEncoder");
-        props.put ("producer.type", "sync");
-        props.put ("request.required.acks", "1");
-        return new ProducerConfig (props);
+        try {
+            sendMessage (data.toString ());
+        } catch (UnconfiguredProducerException upe) {
+            logger.error ("Could not send message {}", data.toString (), upe);
+        }
     }
 }

@@ -27,8 +27,8 @@ public class TweetConsumer extends SubscriptionConsumer {
 
     private final Logger logger = LoggerFactory.getLogger (TweetConsumer.class);
 
-    public TweetConsumer (KafkaStream stream, Subscription subscription, String broker) {
-        super (stream, subscription, broker, "matches");
+    public TweetConsumer (KafkaStream stream, Subscription subscription) {
+        super (stream, subscription, "matches");
     }
 
     protected void processMessage (String message) {

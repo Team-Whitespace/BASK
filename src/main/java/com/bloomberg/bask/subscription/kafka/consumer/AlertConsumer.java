@@ -24,8 +24,8 @@ public class AlertConsumer extends SubscriptionConsumer {
 
     private final Logger logger = LoggerFactory.getLogger (AlertConsumer.class);
 
-    public AlertConsumer (KafkaStream stream, Subscription subscription, String broker) {
-        super (stream, subscription, broker, "results");
+    public AlertConsumer (KafkaStream stream, Subscription subscription) {
+        super (stream, subscription, "results");
     }
 
     protected void processMessage (String message) {
