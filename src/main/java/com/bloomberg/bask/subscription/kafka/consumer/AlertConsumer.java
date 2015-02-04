@@ -32,24 +32,20 @@ public class AlertConsumer extends SubscriptionConsumer {
     }
 
     protected void processMessage (String message) {
-        JSONObject producerMessage;
-        String keyword;
-        JSONArray alerts = new JSONArray (new JSONTokener (message));
-        for (int i = 0; i < alerts.length (); i++) {
-            producerMessage = new JSONObject ();
-            try {
-                keyword = alerts.getJSONObject (i).getString ("alert");
-                producerMessage.put ("keyword", keyword);
-                subscription.addAlert (keyword, keyword);
-                producerMessage.put ("status", 200);
-            } catch (IOException e) {
-                logger.error ("Failed to add alert to the subscription", e);
-                producerMessage.put ("status", 500);
-            } catch (JSONException e) {
-                logger.error ("Failed to read JSON array", e);
-                return;
-            }
-            producer.sendMessage (producerMessage);
+        JSONObject producerMessage = new JSONObject ();
+        JSONObject alert = new JSONObject (new JSONTokener (message));
+        try {
+            String keyword = alert.getString ("alert");
+            producerMessage.put ("keyword", keyword);
+            subscription.addAlert (keyword, keyword);
+            producerMessage.put ("status", 200);
+        } catch (IOException e) {
+            logger.error ("Failed to add alert to the subscription", e);
+            producerMessage.put ("status", 500);
+        } catch (JSONException e) {
+            logger.error ("Failed to read JSON array", e);
+            return;
         }
+        producer.sendMessage (producerMessage);
     }
 }
