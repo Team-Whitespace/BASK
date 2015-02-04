@@ -16,3 +16,5 @@ release.properties
 
 luwak/
 lucene-solr/
+
+.DS_Store
