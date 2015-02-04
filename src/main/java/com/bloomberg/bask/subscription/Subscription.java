@@ -54,7 +54,7 @@ public class Subscription {
      * @param id    The id of the alert
      * @param query The query to be run against the tweets
      */
-    public void addAlert (String id, String query) throws IOException {
+    public synchronized void addAlert (String id, String query) throws IOException {
         MonitorQuery monitorQuery = new MonitorQuery (id, "tweet:" + query);
         monitor.update (monitorQuery);
     }
@@ -65,7 +65,7 @@ public class Subscription {
      * @param tweet The tweet with the keys "id_str" and "text", both values are of the string type
      * @return Queries (alerts) that match the tweet
      */
-    public SimpleMatcher sendTweet (JSONObject tweet) throws IOException {
+    public synchronized SimpleMatcher sendTweet (JSONObject tweet) throws IOException {
         InputDocument doc = InputDocument.builder (tweet.getString ("id_str"))
             .addField ("tweet", tweet.getString ("text"), new StandardAnalyzer (Version.LUCENE_48))
             .build ();
