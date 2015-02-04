@@ -15,10 +15,11 @@ done
 
 
 setup_topics () {
-    $KAFKA_LOCATION/bin/kafka-topics.sh --create --zookeeper 192.168.50.4:2181 --replication-factor 1 --partitions 1 --topic documents
-    $KAFKA_LOCATION/bin/kafka-topics.sh --create --zookeeper 192.168.50.4:2181 --replication-factor 1 --partitions 1 --topic alerts
-    $KAFKA_LOCATION/bin/kafka-topics.sh --create --zookeeper 192.168.50.4:2181 --replication-factor 1 --partitions 1 --topic matches
-    $KAFKA_LOCATION/bin/kafka-topics.sh --create --zookeeper 192.168.50.4:2181 --replication-factor 1 --partitions 1 --topic results
+    $KAFKA_LOCATION/bin/kafka-topics.sh --create --zookeeper 192.168.50.4:2181 --replication-factor 1 --partitions 2 --topic documents
+    $KAFKA_LOCATION/bin/kafka-topics.sh --create --zookeeper 192.168.50.4:2181 --replication-factor 1 --partitions 2 --topic alerts
+    $KAFKA_LOCATION/bin/kafka-topics.sh --create --zookeeper 192.168.50.4:2181 --replication-factor 1 --partitions 2 --topic matches
+    $KAFKA_LOCATION/bin/kafka-topics.sh --create --zookeeper 192.168.50.4:2181 --replication-factor 1 --partitions 2 --topic results
+    $KAFKA_LOCATION/bin/kafka-topics.sh --create --zookeeper 192.168.50.4:2181 --replication-factor 1 --partitions 2 --topic tweets
 }
 
 echo "Starting ZooKeeper..."

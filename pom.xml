@@ -17,6 +17,8 @@
         <jopt.version>4.8</jopt.version>
         <curator.version>2.7.0</curator.version>
         <zookeeper.version>3.4.6</zookeeper.version>
+        <twitter4j.version>4.0.2</twitter4j.version>
+        <commons.version>3.3.2</commons.version>
     </properties>
 
     <dependencies>
@@ -93,6 +95,23 @@
             <version>${curator.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.twitter4j</groupId>
+            <artifactId>twitter4j-core</artifactId>
+            <version>${twitter4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.twitter4j</groupId>
+            <artifactId>twitter4j-stream</artifactId>
+            <version>${twitter4j.version}</version>
+        </dependency>
+
+        <dependency>
+	        <groupId>org.apache.commons</groupId>
+        	<artifactId>commons-lang3</artifactId>
+	        <version>${commons.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

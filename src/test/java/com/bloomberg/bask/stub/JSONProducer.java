@@ -28,12 +28,13 @@ import org.slf4j.LoggerFactory;
  * @author Kiran Hampal
  * @author Jack Markham
  */
-public class TweetProducer {
+public class JSONProducer {
 
-    private static final String source = "src/test/resources/sample_tweets.json";
+    private String source;
     private String topic, broker;
+    private Boolean randomDelay;
 
-    private final Logger logger = LoggerFactory.getLogger (TweetProducer.class);
+    private final Logger logger = LoggerFactory.getLogger (JSONProducer.class);
 
     public static void main (String[] args) {
         OptionParser parser = new OptionParser ();
@@ -45,18 +46,34 @@ public class TweetProducer {
             "topic",
             "The topic to send messages to"
         ).withRequiredArg ().ofType (String.class).required ();
+        parser.accepts (
+            "source",
+            "The JSON source file"
+        ).withRequiredArg ().ofType (String.class).required ();
+        parser.accepts (
+            "randomDelay",
+            "Whether to use a random time delay"
+        ).withRequiredArg ().ofType (Boolean.class).required ();
         OptionSet options = parser.parse (args);
 
-        TweetProducer producer = new TweetProducer (
+        JSONProducer producer = new JSONProducer (
             (String) options.valueOf ("broker"),
-            (String) options.valueOf ("topic")
+            (String) options.valueOf ("topic"),
+            (String) options.valueOf ("source"),
+            (Boolean) options.valueOf ("randomDelay")
         );
         producer.run ();
     }
 
-    public TweetProducer (String broker, String topic) {
+    public JSONProducer (String broker, String topic, String source, Boolean randomDelay) {
         this.broker = broker;
         this.topic = topic;
+        this.source = source;
+        this.randomDelay = randomDelay;
+    }
+
+    public JSONProducer (String broker, String topic, String source) {
+        this (broker, topic, source, false);
     }
 
     private ProducerConfig config () {
@@ -78,7 +95,9 @@ public class TweetProducer {
             String msg = jsonArray.get (i).toString ();
             KeyedMessage<String, String> data = new KeyedMessage<String, String> (topic, msg);
             producer.send (data);
-            TimeUnit.SECONDS.sleep (randomTime (6));
+            if (randomDelay) {
+                TimeUnit.SECONDS.sleep (randomTime (2));
+            }
         }
         producer.close ();
     }
