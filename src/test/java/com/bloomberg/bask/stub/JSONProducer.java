@@ -20,10 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This simple class is reads tweets from a file and then sends them on
- * to a Kafka queue. It is meant to stand in place for Solr which
- * would read tweets from Twitter's streaming API, store them, and then
- * send them to a Kafka queue.
+ * This class reads a JSON array from a file and sends each object in the array
+ * to a Kafka queue, with an optional random delay.
  *
  * @author Kiran Hampal
  * @author Jack Markham
