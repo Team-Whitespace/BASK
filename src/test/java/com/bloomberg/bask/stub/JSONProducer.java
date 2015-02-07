@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class reads a JSON array from a file and sends each object in the array
- * to a Kafka queue, with an optional random delay.
+ * to a Kafka queue, with an optional delay.
  *
  * @author Kiran Hampal
  * @author Jack Markham
@@ -30,7 +30,7 @@ public class JSONProducer {
 
     private String source;
     private String topic, broker;
-    private Boolean randomDelay;
+    private Integer delay;
 
     private final Logger logger = LoggerFactory.getLogger (JSONProducer.class);
 
@@ -49,29 +49,29 @@ public class JSONProducer {
             "The JSON source file"
         ).withRequiredArg ().ofType (String.class).required ();
         parser.accepts (
-            "randomDelay",
-            "Whether to use a random time delay"
-        ).withRequiredArg ().ofType (Boolean.class).required ();
+            "delay",
+            "The time delay between each tweet in ms"
+        ).withRequiredArg ().ofType (Integer.class).required ();
         OptionSet options = parser.parse (args);
 
         JSONProducer producer = new JSONProducer (
             (String) options.valueOf ("broker"),
             (String) options.valueOf ("topic"),
             (String) options.valueOf ("source"),
-            (Boolean) options.valueOf ("randomDelay")
+            (Integer) options.valueOf ("delay")
         );
         producer.run ();
     }
 
-    public JSONProducer (String broker, String topic, String source, Boolean randomDelay) {
+    public JSONProducer (String broker, String topic, String source, Integer delay) {
         this.broker = broker;
         this.topic = topic;
         this.source = source;
-        this.randomDelay = randomDelay;
+        this.delay = delay;
     }
 
     public JSONProducer (String broker, String topic, String source) {
-        this (broker, topic, source, false);
+        this (broker, topic, source, 0);
     }
 
     private ProducerConfig config () {
@@ -84,7 +84,7 @@ public class JSONProducer {
     }
 
     /**
-     * Sends each JSON object in an array to Kafka, with a delay of 1-6 seconds
+     * Sends each JSON object in an array to Kafka, with a specified delay
      */
     private void sendJSON (JSONArray jsonArray) throws Exception {
         Producer<String, String> producer = new Producer<String, String> (config ());
@@ -93,19 +93,10 @@ public class JSONProducer {
             String msg = jsonArray.get (i).toString ();
             KeyedMessage<String, String> data = new KeyedMessage<String, String> (topic, msg);
             producer.send (data);
-            if (randomDelay) {
-                TimeUnit.SECONDS.sleep (randomTime (2));
-            }
+            if (delay > 0)
+                TimeUnit.MILLISECONDS.sleep (delay);
         }
         producer.close ();
-    }
-
-    /**
-     * Returns a random number between max and 1
-     */
-    private int randomTime (int max) {
-        Random random = new Random ();
-        return random.nextInt (max) + 1;
     }
 
     public void run () {
