@@ -29,7 +29,7 @@ setup_solr () {
     cp dist/solr-*.war /var/lib/tomcat7/webapps/solr.war
 	cp -R example/solr /var/lib/tomcat7
     #copy tweets db-core
-    cp -R /vagrant/src/main/resources/solr/ /var/lib/tomcat7/solr/
+    cp -R /vagrant/solr/ /var/lib/tomcat7/solr/
     mv /var/lib/tomcat7/solr/solr/ /var/lib/tomcat7/solr/tweets/
     #
 	chown -R tomcat7:tomcat7 /var/lib/tomcat7/solr
