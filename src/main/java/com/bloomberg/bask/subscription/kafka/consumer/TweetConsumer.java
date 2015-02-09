@@ -42,7 +42,9 @@ public class TweetConsumer extends SubscriptionConsumer {
             for (QueryMatch query : queries) {
                 keywords.put (query.getQueryId ());
             }
-            producer.sendMessage (producerMessage);
+            if (keywords.length () > 0) {
+                producer.sendMessage (producerMessage);
+            }
         } catch (IOException ie) {
             logger.error ("Failed to send tweet to subscription", ie);
         }
