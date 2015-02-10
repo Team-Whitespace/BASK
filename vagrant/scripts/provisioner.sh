@@ -32,7 +32,7 @@ setup_solr () {
     mkdir /var/lib/tomcat7/solr/tweets/
     cp -R /var/lib/tomcat7/solr/collection1/* /var/lib/tomcat7/solr/tweets
     #copy tweets db-core
-	cp -R /vagrant/solr/* /var/lib/tomcat7/solr/tweets/
+    cp -R /vagrant/solr/* /var/lib/tomcat7/solr/tweets/
     rm -R /var/lib/tomcat7/solr/tweets/data
     #
     chown -R tomcat7:tomcat7 /var/lib/tomcat7/solr
