@@ -1,58 +1,62 @@
 BASK
 ====
 
-Building Bask
--------------
-
-    You will need to build the whole project initially
-
-    $ ./build.sh
-
-    If you already have built Solr, Lucense & Luwak you can just do
-
-    $ mvn clean install
-
-Kafka
+About
 -----
 
-Start up Vagrant and SSH into it:
+BASK is a Samza inspired real time Twitter alerting application written by 5 University
+of Bristol students.
 
-    $ vagrant up
+Running Bask
+-------------
 
-    $ vagrant ssh
+1. You will need to build the whole project initially
 
-Start up ZooKeeper and Kafka:
+        $ ./build.sh
 
-    $ /vagrant/vagrant/scripts/run-kafka.sh --init-topics
+   If you already have built Solr, Lucense & Luwak you can just do
 
+        $ mvn clean install
 
-Running the demo
-----------------
+2. Start up Vagrant, and run Kafka/Zookeeper/Solr on it
 
-    $ mvn -q -e exec:java -Dexec.mainClass="com.bloomberg.bask.subscription.SubscriptionRunner" -Dexec.classpathScope="test" -Dexec.args="192.168.50.4:2181"
+        $ vagrant up && vagrant ssh
+        $ /vagrant/vagrant/scripts/run-kafka.sh --init-topics
+        $ exit
 
+3. Extract the generated archive
 
-Running the sample consumer and producer
-----------------------------------------
+        $ mkdir -p deploy/bask
+        $ tar -xvf ./target/bask-1.0-SNAPSHOT-dist.tar.gz -C deploy/bask
 
-Viewing the messages on the sample consumer (on the vagrant machine):
+4. Start the feed
 
-    $ /usr/share/kafka/bin/kafka-console-consumer.sh --zookeeper 192.168.50.4:2181 --topic TOPICNAME --from-beginning
+        $ deploy/bask/bin/run-feed.sh --feed deploy/bask/config/twitter.feed.properties
 
-Sending messages on the sample producer (on the vagrant machine):
+   **NOTE:** You will need to add your own oauth details in the properties file and change `localhost` to `192.168.50.4` if using the vagrant machine provided!
 
-    $ /usr/share/kafkabin/kafka-console-producer.sh --broker-list 192.168.50.4:9092 --topic documents
+5. Start the task(s)
 
+        $ deploy/bask/bin/run-task.sh --task deploy/bask/config/solr.task.properties
+        $ deploy/bask/bin/run-task.sh --task deploy/bask/config/subscription.task.properties
 
-Running the throwaway producer
--------------------------------
+   **NOTE:** You will need to change `localhost` to `192.168.50.4` if using the vagrant machine provided!
 
-Adding Sample Alerts:
+Development notes
+------------------
 
-    $ mvn -q -e exec:java -Dexec.mainClass="com.bloomberg.bask.stub.JSONProducer" -Dexec.classpathScope="test" -Dexec.args="--broker 192.168.50.4:9092 --topic alerts --source src/test/resources/sample_queries.json --delay 0"
+For debugging purpose, it may be useful to see message on a topic, or send messages to one.
 
+Viewing the messages on the sample consumer:
 
-Adding Sample Tweets:
+        $ /usr/share/kafka/bin/kafka-console-consumer.sh --zookeeper 192.168.50.4:2181 --topic TOPICNAME --from-beginning
 
-    $ mvn -q -e exec:java -Dexec.mainClass="com.bloomberg.bask.stub.JSONProducer" -Dexec.classpathScope="test" -Dexec.args="--broker 192.168.50.4:9092 --topic documents --source src/test/resources/sample_tweets.json --delay 100"
+Sending messages on the sample producer:
+
+        $ /usr/share/kafka/bin/kafka-console-producer.sh --broker-list 192.168.50.4:9092 --topic TOPICNAME
+
+To run the application without extracting the tarball, you can do:
+
+        $ mvn -q -e exec:java -Dexec.mainClass="com.bloomberg.bask.job.RunFeed" -Dexec.args="--feed src/main/config/FEEDNAME.feed.properties"
+        $ mvn -q -e exec:java -Dexec.mainClass="com.bloomberg.bask.job.RunTask" -Dexec.args="--task src/main/config/TASKNAME.task.properties"
 

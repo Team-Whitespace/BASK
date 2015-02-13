@@ -1,24 +1,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <prerequisites>
+        <maven>3.0.0</maven>
+    </prerequisites>
     <groupId>com.bloomberg</groupId>
     <artifactId>bask</artifactId>
     <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
     <name>BASK</name>
-    <url>http://maven.apache.org</url>
+    <description>Twitter alerting and searching.</description>
 
     <properties>
-        <luwak.version>1.1.0-lucene48-rc1-SNAPSHOT</luwak.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <hbc.version>2.2.0</hbc.version>
+        <jopt.version>4.8</jopt.version>
         <junit.version>4.11</junit.version>
         <kafka.version>0.8.1.1</kafka.version>
-        <json.version>20140107</json.version>
+        <luwak.version>1.1.0-lucene48-rc1-SNAPSHOT</luwak.version>
         <slf4j.version>1.7.7</slf4j.version>
-        <jopt.version>4.8</jopt.version>
-        <curator.version>2.7.0</curator.version>
-        <zookeeper.version>3.4.6</zookeeper.version>
-        <twitter4j.version>4.0.2</twitter4j.version>
-        <commons.version>3.3.2</commons.version>
     </properties>
 
     <dependencies>
@@ -65,12 +65,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>${json.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>${slf4j.version}</version>
@@ -83,34 +77,9 @@
         </dependency>
 
         <dependency>
-	        <groupId>org.apache.zookeeper</groupId>
-	        <artifactId>zookeeper</artifactId>
-	        <version>${zookeeper.version}</version>
-        </dependency>
-
-        <dependency>
-	        <groupId>org.apache.curator</groupId>
-	        <artifactId>curator-test</artifactId>
-            <scope>test</scope>
-            <version>${curator.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.twitter4j</groupId>
-            <artifactId>twitter4j-core</artifactId>
-            <version>${twitter4j.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.twitter4j</groupId>
-            <artifactId>twitter4j-stream</artifactId>
-            <version>${twitter4j.version}</version>
-        </dependency>
-
-        <dependency>
-	        <groupId>org.apache.commons</groupId>
-        	<artifactId>commons-lang3</artifactId>
-	        <version>${commons.version}</version>
+            <groupId>com.twitter</groupId>
+            <artifactId>hbc-core</artifactId>
+            <version>${hbc.version}</version>
         </dependency>
     </dependencies>
     <build>
@@ -123,6 +92,25 @@
                     <source>1.7</source>
                     <target>1.7</target>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/assembly/src.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
