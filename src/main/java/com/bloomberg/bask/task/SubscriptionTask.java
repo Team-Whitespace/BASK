@@ -35,7 +35,7 @@ public class SubscriptionTask implements Task {
     private Monitor monitor;
 
     public SubscriptionTask() throws IOException {
-        monitor = new Monitor(new LuceneQueryCache("document"), new TermFilteredPresearcher());
+        monitor = new Monitor(new LuceneQueryCache("text"), new TermFilteredPresearcher());
     }
 
     @Override
@@ -43,7 +43,7 @@ public class SubscriptionTask implements Task {
         String stream = envelope.getStream();
         switch (stream) {
             case "alerts":
-                handleAlert((Map<String, String>) envelope.getMessage ());
+                handleAlert((Map<String, String>) envelope.getMessage());
                 break;
             case "documents":
                 Map<String, Object> matches = handleMatches((Map<String, Object>) envelope.getMessage());
@@ -75,7 +75,7 @@ public class SubscriptionTask implements Task {
         String action = message.get("action");
         try {
             switch (action) {
-                case "add": addAlert(alert, "text:"+alert); break;
+                case "add": addAlert(alert, "text:" + alert); break;
                 case "delete": deleteAlert(alert); break;
             }
         } catch (IOException ie) {
@@ -105,9 +105,9 @@ public class SubscriptionTask implements Task {
     }
 
     private SimpleMatcher matchDocument(Map<String, Object> document) throws IOException {
-        InputDocument doc = InputDocument.builder ((String) document.get("id_str"))
+        InputDocument doc = InputDocument.builder((String) document.get("id_str"))
             .addField ("text", (String) document.get("text"), new StandardAnalyzer(Version.LUCENE_48))
-            .build ();
+            .build();
         return monitor.match(doc, SimpleMatcher.FACTORY);
     }
 }
