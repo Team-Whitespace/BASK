@@ -9,21 +9,18 @@ import kafka.producer.ProducerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Barebones Kafka Producer
- *
- * @author Kiran Hampal
- */
 public class SystemProducer {
 
     private static final Logger logger = LoggerFactory.getLogger(SystemProducer.class);
 
     private Producer<String, Object> producer;
 
-    public SystemProducer() {}
-
     public SystemProducer(Properties props) {
         producer = new Producer<String, Object>(new ProducerConfig(props));
+    }
+
+    public SystemProducer(Producer producer) {
+        this.producer = producer;
     }
 
     public void send(Envelope envelope) {
