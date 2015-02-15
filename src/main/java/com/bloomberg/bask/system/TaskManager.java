@@ -1,6 +1,6 @@
 package com.bloomberg.bask.system;
 
-import com.bloomberg.bask.task.Task;
+import com.bloomberg.bask.task.StreamTask;
 
 import kafka.consumer.Consumer;
 import kafka.consumer.ConsumerConfig;
@@ -34,7 +34,7 @@ public class TaskManager {
         this.producer = producer;
     }
 
-    public void run(final Task task, List<String> inputStreams) {
+    public void run(final StreamTask task, List<String> inputStreams) {
         Decoder decoder = new StringDecoder(new VerifiableProperties());
         Map<String, Integer> topicThreads = new HashMap<String, Integer>();
         for (String topic : inputStreams) {

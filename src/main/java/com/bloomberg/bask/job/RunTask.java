@@ -1,13 +1,14 @@
 package com.bloomberg.bask.job;
 
-import com.bloomberg.bask.task.Task;
 import com.bloomberg.bask.system.SystemProducer;
 import com.bloomberg.bask.system.TaskManager;
+import com.bloomberg.bask.task.InitableTask;
+import com.bloomberg.bask.task.StreamTask;
 import com.bloomberg.bask.util.PropertiesHelper;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Properties;
 
@@ -38,28 +39,24 @@ public class RunTask {
         Properties props = new Properties();
         try {
             props.load(new FileInputStream(filename));
-            Class<?> clazz = Class.forName(props.getProperty("task.class"));
-            Task task = (Task)clazz.newInstance();
+            String taskClass = props.getProperty("task.class");
+            Class<?> clazz = Class.forName(taskClass);
+            if (!StreamTask.class.isAssignableFrom(clazz)) {
+                throw new NotATaskException(taskClass + " is not a task");
+            }
+            StreamTask task = (StreamTask)clazz.newInstance();
             List<String> streams = PropertiesHelper.valuesToList(props.getProperty("input.streams"));
             SystemProducer producer = new SystemProducer(PropertiesHelper.extractConfig("kafka.producer.", props));
             Properties consumerConfig = PropertiesHelper.extractConfig("kafka.consumer.", props);
             TaskManager taskManager = new TaskManager(consumerConfig, producer);
+            if (InitableTask.class.isAssignableFrom(clazz)) {
+                clazz.getMethod("init", Properties.class).invoke(task, props);
+            }
             taskManager.run(task, streams);
-        } catch (FileNotFoundException fe) {
-            logger.error("{} not found", filename, fe);
-            throw new RuntimeException();
-        } catch (IOException ioe) {
-            logger.error("{} could no be loaded", filename, ioe);
-            throw new RuntimeException();
-        } catch (ClassNotFoundException ce) {
-            logger.error("{} class not found", props.getProperty("task.class"), ce);
-            throw new RuntimeException();
-        } catch (InstantiationException ie) {
-            logger.error("Instantiation exception", ie);
-            throw new RuntimeException();
-        } catch (IllegalAccessException iae) {
-            logger.error("Illegal accesss", iae);
-            throw new RuntimeException();
+        } catch (IOException|ClassNotFoundException|InstantiationException|
+                IllegalAccessException|InvocationTargetException|NoSuchMethodException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getCause());
         }
     }
 }

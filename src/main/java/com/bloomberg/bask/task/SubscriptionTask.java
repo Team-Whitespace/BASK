@@ -3,15 +3,19 @@ package com.bloomberg.bask.task;
 import com.bloomberg.bask.system.Envelope;
 import com.bloomberg.bask.system.SystemProducer;
 
+import java.io.File;
 import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.store.MMapDirectory;
+import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
 
 import org.slf4j.Logger;
@@ -22,20 +26,34 @@ import uk.co.flax.luwak.InputDocument;
 import uk.co.flax.luwak.InputDocument.Builder;
 import uk.co.flax.luwak.Monitor;
 import uk.co.flax.luwak.MonitorQuery;
+import uk.co.flax.luwak.Presearcher;
 import uk.co.flax.luwak.QueryError;
 import uk.co.flax.luwak.QueryMatch;
 import uk.co.flax.luwak.presearcher.TermFilteredPresearcher;
 import uk.co.flax.luwak.parsers.LuceneQueryCache;
 import uk.co.flax.luwak.matchers.SimpleMatcher;
 
-public class SubscriptionTask implements Task {
+public class SubscriptionTask implements InitableTask, StreamTask {
 
     private static final Logger logger = LoggerFactory.getLogger(SubscriptionTask.class);
 
     private Monitor monitor;
 
-    public SubscriptionTask() throws IOException {
-        monitor = new Monitor(new LuceneQueryCache("text"), new TermFilteredPresearcher());
+    @Override
+    public void init(Properties config) {
+        try {
+            String indexPath = config.getProperty("subscription.lucene.directory");
+            LuceneQueryCache queryCache = new LuceneQueryCache("text");
+            Presearcher presearcher = new TermFilteredPresearcher();
+            if (indexPath == null || indexPath.isEmpty()) {
+                monitor = new Monitor(queryCache, presearcher, new RAMDirectory());
+            } else {
+                monitor = new Monitor(queryCache, presearcher, new MMapDirectory(new File(indexPath)));
+            }
+            addAlert("test", "test");
+        } catch(IOException e) {
+            throw new RuntimeException(e.getCause());
+        }
     }
 
     @Override

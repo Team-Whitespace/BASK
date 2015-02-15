@@ -1,6 +1,6 @@
 package com.bloomberg.bask.system;
 
-import com.bloomberg.bask.task.Task;
+import com.bloomberg.bask.task.StreamTask;
 
 import kafka.consumer.ConsumerIterator;
 import kafka.consumer.KafkaStream;
@@ -18,7 +18,7 @@ public class TaskThreadTest {
 
     @Test
     public void testTaskThreadShouldCallTaskProcess() {
-        Task task = mock(Task.class);
+        StreamTask task = mock(StreamTask.class);
         SystemProducer producer = mock(SystemProducer.class);
         KafkaStream stream = mock(KafkaStream.class);
         ConsumerIterator iter = mock(ConsumerIterator.class);

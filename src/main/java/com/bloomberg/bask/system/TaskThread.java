@@ -1,6 +1,6 @@
 package com.bloomberg.bask.system;
 
-import com.bloomberg.bask.task.Task;
+import com.bloomberg.bask.task.StreamTask;
 
 import kafka.consumer.ConsumerIterator;
 import kafka.consumer.KafkaStream;
@@ -10,9 +10,9 @@ public class TaskThread implements Runnable {
 
     private KafkaStream stream;
     private SystemProducer producer;
-    private Task task;
+    private StreamTask task;
 
-    public TaskThread(Task task, SystemProducer producer, KafkaStream stream) {
+    public TaskThread(StreamTask task, SystemProducer producer, KafkaStream stream) {
         this.task = task;
         this.stream = stream;
         this.producer = producer;

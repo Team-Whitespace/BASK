@@ -6,6 +6,7 @@ import com.bloomberg.bask.system.SystemProducer;
 import com.google.common.collect.ImmutableMap;
 
 import java.io.IOException;
+import java.util.Properties;
 
 import org.junit.Test;
 
@@ -29,6 +30,7 @@ public class SubscriptionTaskTest {
         SystemProducer producer = mock(SystemProducer.class);
 
         SubscriptionTask task = new SubscriptionTask();
+        task.init(new Properties());
 
         task.process(envelopeAlert, producer);
         task.process(envelopeDoc, producer);

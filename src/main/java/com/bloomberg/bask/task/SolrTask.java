@@ -6,7 +6,7 @@ import com.bloomberg.bask.system.SystemProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SolrTask implements Task {
+public class SolrTask implements StreamTask {
 
     private static final Logger logger = LoggerFactory.getLogger(SolrTask.class);
 
