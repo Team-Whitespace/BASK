@@ -1,7 +1,5 @@
 package com.bloomberg.bask.system;
 
-import com.google.common.collect.ImmutableMap;
-
 import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
 
@@ -17,8 +15,6 @@ public class SystemProducerTest {
     @Test
     public void testSendingEnvelopeSendsMessage() {
         Envelope envelope = mock(Envelope.class);
-        when(envelope.getMessage()).thenReturn(ImmutableMap.of("foo", "bar"));
-        when(envelope.getMessage()).thenReturn(ImmutableMap.of("wibble", "wobble"));
         when(envelope.getStream()).thenReturn("baz");
 
         Producer producer = mock(Producer.class);

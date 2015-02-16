@@ -3,16 +3,16 @@ package com.bloomberg.bask.system;
 public class Envelope {
 
     private final String _key;
-    private final Object _message;
+    private final String _message;
     private final String _stream;
 
-    public Envelope(String key, Object message, String stream) {
+    public Envelope(String key, String message, String stream) {
         _key = key;
         _message = message;
         _stream = stream;
     }
 
-    public Envelope(Object message, String stream) {
+    public Envelope(String message, String stream) {
         this(null, message, stream);
     }
 
@@ -20,7 +20,7 @@ public class Envelope {
         return _key;
     }
 
-    public Object getMessage() {
+    public String getMessage() {
         return _message;
     }
 

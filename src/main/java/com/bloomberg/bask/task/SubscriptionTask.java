@@ -1,5 +1,6 @@
 package com.bloomberg.bask.task;
 
+import com.bloomberg.bask.serializer.JSONString;
 import com.bloomberg.bask.system.Envelope;
 import com.bloomberg.bask.system.SystemProducer;
 
@@ -38,10 +39,12 @@ public class SubscriptionTask implements InitableTask, StreamTask {
     private static final Logger logger = LoggerFactory.getLogger(SubscriptionTask.class);
 
     private Monitor monitor;
+    private JSONString decoder;
 
     @Override
     public void init(Properties config) {
         try {
+            decoder = new JSONString();
             String indexPath = config.getProperty("subscription.lucene.directory");
             LuceneQueryCache queryCache = new LuceneQueryCache("text");
             Presearcher presearcher = new TermFilteredPresearcher();
@@ -50,7 +53,6 @@ public class SubscriptionTask implements InitableTask, StreamTask {
             } else {
                 monitor = new Monitor(queryCache, presearcher, new MMapDirectory(new File(indexPath)));
             }
-            addAlert("test", "test");
         } catch(IOException e) {
             throw new RuntimeException(e.getCause());
         }
@@ -61,11 +63,14 @@ public class SubscriptionTask implements InitableTask, StreamTask {
         String stream = envelope.getStream();
         switch (stream) {
             case "alerts":
-                handleAlert((Map<String, String>) envelope.getMessage());
+                handleAlert(decoder.fromString(envelope.getMessage()));
                 break;
             case "documents":
-                Map<String, Object> matches = handleMatches((Map<String, Object>) envelope.getMessage());
-                producer.send(new Envelope(matches, "matches"));
+                Map<String, Object> document = decoder.fromString(envelope.getMessage());
+                if (document.get("id_str") != null && document.get("text") != null) {
+                    String matches = decoder.toString(handleMatches(document));
+                    producer.send(new Envelope(matches, "matches"));
+                }
                 break;
             default:
                 throw new UnexpectedStreamException("Unexpected stream: " + stream);
@@ -88,9 +93,9 @@ public class SubscriptionTask implements InitableTask, StreamTask {
         return result;
     }
 
-    private void handleAlert(Map<String, String> message) {
-        String alert = message.get("alert");
-        String action = message.get("action");
+    private void handleAlert(Map<String, ?> message) {
+        String alert = (String) message.get("alert");
+        String action = (String) message.get("action");
         try {
             switch (action) {
                 case "add": addAlert(alert, "text:" + alert); break;

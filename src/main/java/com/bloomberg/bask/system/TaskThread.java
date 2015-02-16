@@ -19,9 +19,9 @@ public class TaskThread implements Runnable {
     }
 
     public void run() {
-        ConsumerIterator<String, Object> iter = stream.iterator();
+        ConsumerIterator<String, String> iter = stream.iterator();
         while (iter.hasNext()) {
-            MessageAndMetadata<String, Object> msg = iter.next();
+            MessageAndMetadata<String, String> msg = iter.next();
             Envelope message = new Envelope(msg.key(), msg.message(), msg.topic());
             task.process(message, producer);
         }

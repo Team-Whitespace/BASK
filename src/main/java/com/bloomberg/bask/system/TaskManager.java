@@ -38,28 +38,13 @@ public class TaskManager {
     public void run(final StreamTask task, List<String> inputStreams) {
         Map<String, Integer> topicThreads = new HashMap<String, Integer>();
         for (String topic : inputStreams) topicThreads.put(topic, 1);
-
-        String messageDecoderClass = config.getProperty("kafka.consumer.deserializer.class");
-        Decoder keyDecoder = new StringDecoder(new VerifiableProperties());
-        Decoder messageDecoder = null;
-        if (messageDecoderClass != null) {
-            try {
-                messageDecoder = (Decoder)Class.forName(messageDecoderClass).newInstance();
-            } catch (ClassNotFoundException|InstantiationException|IllegalAccessException e) {
-                logger.error("Could not load deserializer class", e);
-            }
-        }
-        if (messageDecoder == null) {
-            messageDecoder = keyDecoder;
-        }
-
+        Decoder decoder = new StringDecoder(new VerifiableProperties());
         consumer = Consumer.createJavaConsumerConnector(new ConsumerConfig(config));
-        Map<String, List<KafkaStream<String, Object>>> consumerMap = consumer.createMessageStreams(
-                topicThreads, keyDecoder, messageDecoder);
-
+        Map<String, List<KafkaStream<String, String>>> consumerMap = consumer.createMessageStreams(
+                topicThreads, decoder, decoder);
         executor = Executors.newFixedThreadPool(totalThreads(topicThreads));
 
-        for (Map.Entry<String, List<KafkaStream<String, Object>>> streamEntry : consumerMap.entrySet()) {
+        for (Map.Entry<String, List<KafkaStream<String, String>>> streamEntry : consumerMap.entrySet()) {
             for (final KafkaStream stream : streamEntry.getValue()) {
                 executor.submit(new TaskThread(task, producer, stream));
             }
