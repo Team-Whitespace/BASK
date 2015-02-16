@@ -26,22 +26,36 @@ public class TaskManager {
     private static final Logger logger = LoggerFactory.getLogger(TaskManager.class);
 
     private final SystemProducer producer;
-    private final ConsumerConnector consumer;
+    private final Properties config;
+    private ConsumerConnector consumer;
     private ExecutorService executor;
 
     public TaskManager(Properties config, SystemProducer producer) {
-        consumer = Consumer.createJavaConsumerConnector(new ConsumerConfig(config));
         this.producer = producer;
+        this.config = config;
     }
 
     public void run(final StreamTask task, List<String> inputStreams) {
-        Decoder decoder = new StringDecoder(new VerifiableProperties());
         Map<String, Integer> topicThreads = new HashMap<String, Integer>();
-        for (String topic : inputStreams) {
-            topicThreads.put(topic, 1);
+        for (String topic : inputStreams) topicThreads.put(topic, 1);
+
+        String messageDecoderClass = config.getProperty("kafka.consumer.deserializer.class");
+        Decoder keyDecoder = new StringDecoder(new VerifiableProperties());
+        Decoder messageDecoder = null;
+        if (messageDecoderClass != null) {
+            try {
+                messageDecoder = (Decoder)Class.forName(messageDecoderClass).newInstance();
+            } catch (ClassNotFoundException|InstantiationException|IllegalAccessException e) {
+                logger.error("Could not load deserializer class", e);
+            }
         }
+        if (messageDecoder == null) {
+            messageDecoder = keyDecoder;
+        }
+
+        consumer = Consumer.createJavaConsumerConnector(new ConsumerConfig(config));
         Map<String, List<KafkaStream<String, Object>>> consumerMap = consumer.createMessageStreams(
-                topicThreads, decoder, decoder);
+                topicThreads, keyDecoder, messageDecoder);
 
         executor = Executors.newFixedThreadPool(totalThreads(topicThreads));
 

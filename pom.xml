@@ -15,6 +15,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <guava.version>18.0</guava.version>
         <hbc.version>2.2.0</hbc.version>
+        <jackson.version>2.5.1</jackson.version>
         <jopt.version>4.8</jopt.version>
         <junit.version>4.11</junit.version>
         <kafka.version>0.8.1.1</kafka.version>
@@ -95,6 +96,18 @@
 	        <groupId>com.google.guava</groupId>
 	        <artifactId>guava</artifactId>
 	        <version>${guava.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
     </dependencies>
     <build>

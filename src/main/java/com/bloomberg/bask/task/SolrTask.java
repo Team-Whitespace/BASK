@@ -12,8 +12,8 @@ public class SolrTask implements StreamTask {
 
     @Override
     public void process(Envelope envelope, SystemProducer producer) {
-        // [TODO]
-        System.out.println(envelope.getMessage());
+        // [TODO] For now, just pass the envelope straight along
+        producer.send(envelope);
     }
 
 }
