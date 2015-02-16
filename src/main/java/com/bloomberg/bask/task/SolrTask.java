@@ -13,7 +13,7 @@ public class SolrTask implements StreamTask {
     @Override
     public void process(Envelope envelope, SystemProducer producer) {
         // [TODO] For now, just pass the envelope straight along
-        producer.send(envelope);
+        producer.send(new Envelope(envelope.getMessage(), "documents"));
     }
 
 }
