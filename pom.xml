@@ -14,12 +14,14 @@
         <kafka.version>0.8.1.1</kafka.version>
         <json.version>20140107</json.version>
         <slf4j.version>1.7.7</slf4j.version>
-        <solr.version>4.10.3</solr.version>
+		<solr.version>4.10.3</solr.version>
+		<log4j.version>1.2.17</log4j.version>
         <jopt.version>4.8</jopt.version>
         <curator.version>2.7.0</curator.version>
         <zookeeper.version>3.4.6</zookeeper.version>
         <twitter4j.version>4.0.2</twitter4j.version>
         <commons.version>3.3.2</commons.version>
+		 <commons-logging.version>1.1.1</commons-logging.version>
     </properties>
 
     <dependencies>
@@ -73,10 +75,22 @@
 
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
+            <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+		
+		<dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+		
 		<dependency>
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-solrj</artifactId>
@@ -118,6 +132,12 @@
 	        <groupId>org.apache.commons</groupId>
         	<artifactId>commons-lang3</artifactId>
 	        <version>${commons.version}</version>
+        </dependency>
+		
+        <dependency>
+	        <groupId>commons-logging</groupId>
+        	<artifactId>commons-logging</artifactId>
+	        <version>${commons-logging.version}</version>
         </dependency>
     </dependencies>
     <build>

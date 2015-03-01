@@ -10,6 +10,9 @@ import kafka.serializer.Decoder;
 import kafka.serializer.StringDecoder;
 import kafka.utils.VerifiableProperties;
 
+//import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.commons.logging.LogFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.Executors;
@@ -29,17 +32,17 @@ import org.slf4j.LoggerFactory;
  * Runs the Solr tweet consumer threads
  * @author Radu Ban
  */
-
+	
 public class SolrTweetConsumerManager implements Runnable
 {
     private static final Logger logger = LoggerFactory.getLogger(SolrTweetConsumerManager.class);
     private ExecutorService executor;
     private ConsumerConnector consumer;
     private String zkConnect, groupID;
-
+    
     public static void main(String[] args)
     {
-    	String zkConnect = "192.168.50.4:2181";
+    	String zkConnect = "localhost:2181";
     	String groupID = "test-id";
     	SolrTweetConsumerManager app = new SolrTweetConsumerManager(zkConnect, groupID);
         app.run();
@@ -50,16 +53,15 @@ public class SolrTweetConsumerManager implements Runnable
         this.zkConnect = zkConnect;
         this.groupID = groupID;
        	logger.info("zkConnect: {}",zkConnect);
-       	logger.info("groupID: {}",groupID);
-       	
+       	logger.info("groupID: {}",groupID);       	
     }
 
     /**
      * Runs all the Consumer threads
      */
     public void run()
-    {
-        Decoder decoder = new StringDecoder(new VerifiableProperties());
+    {		
+		Decoder decoder = new StringDecoder(new VerifiableProperties());
         Map<String, Integer> topicThreads = new HashMap<String, Integer>();
         topicThreads.put("tweets", 1);
         //topicThreads.put("documents", 1);
