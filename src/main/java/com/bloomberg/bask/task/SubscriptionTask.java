@@ -30,9 +30,10 @@ import uk.co.flax.luwak.MonitorQuery;
 import uk.co.flax.luwak.Presearcher;
 import uk.co.flax.luwak.QueryError;
 import uk.co.flax.luwak.QueryMatch;
+import uk.co.flax.luwak.intervals.IntervalsMatcher;
+import uk.co.flax.luwak.intervals.IntervalsQueryMatch;
 import uk.co.flax.luwak.presearcher.TermFilteredPresearcher;
 import uk.co.flax.luwak.parsers.LuceneQueryCache;
-import uk.co.flax.luwak.matchers.SimpleMatcher;
 
 public class SubscriptionTask implements InitableTask, StreamTask {
 
@@ -78,13 +79,29 @@ public class SubscriptionTask implements InitableTask, StreamTask {
     }
 
     private Map<String, Object> handleMatches(Map<String, Object> message) {
-        Map<String, Object> result = new HashMap<String, Object>();
-        List<String> keywords = new ArrayList<String>();
+        Map<String, Object> result = new HashMap<String, Object>(), match, position, positions;
+        List<Object> matches = new ArrayList<Object>(), fields;
         try {
-            for (QueryMatch match : matchDocument(message)) {
-                keywords.add(match.getQueryId());
+            for (IntervalsQueryMatch queryMatch : matchDocument(message)) {
+                match = new HashMap<String, Object>();
+                match.put("queryid", queryMatch.getQueryId());
+                positions = new HashMap<String, Object>();
+                for (String fieldName : queryMatch.getFields()) {
+                    fields = new ArrayList<Object>();
+                    for (IntervalsQueryMatch.Hit queryHit : queryMatch.getHits(fieldName)) {
+                        position = new HashMap<String, Object>();
+                        position.put("endOffset", queryHit.endOffset);
+                        position.put("endPosition", queryHit.endPosition);
+                        position.put("startOffset", queryHit.startOffset);
+                        position.put("startPosition", queryHit.startPosition);
+                        fields.add(position);
+                    }
+                    positions.put(fieldName, fields);
+                }
+                match.put("positions", positions);
+                matches.add(match);
             }
-            result.put("keywords", keywords);
+            result.put("matches", matches);
             result.put("tweet", message);
         } catch (IOException ie) {
             logger.error ("Failed to match", ie);
@@ -127,10 +144,10 @@ public class SubscriptionTask implements InitableTask, StreamTask {
         }
     }
 
-    private SimpleMatcher matchDocument(Map<String, Object> document) throws IOException {
+    private IntervalsMatcher matchDocument(Map<String, Object> document) throws IOException {
         InputDocument doc = InputDocument.builder((String) document.get("id_str"))
             .addField ("text", (String) document.get("text"), new StandardAnalyzer(Version.LUCENE_48))
             .build();
-        return monitor.match(doc, SimpleMatcher.FACTORY);
+        return monitor.match(doc, IntervalsMatcher.FACTORY);
     }
 }
