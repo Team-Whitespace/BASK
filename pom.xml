@@ -16,7 +16,6 @@
         <guava.version>18.0</guava.version>
         <hbc.version>2.2.0</hbc.version>
         <jackson.version>2.5.1</jackson.version>
-        <json.version>20140107</json.version>
         <jopt.version>4.8</jopt.version>
         <junit.version>4.11</junit.version>
         <kafka.version>0.8.1.1</kafka.version>
@@ -143,12 +142,6 @@
 	        <groupId>commons-logging</groupId>
         	<artifactId>commons-logging</artifactId>
 	        <version>${commons-logging.version}</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>${json.version}</version>
         </dependency>
     </dependencies>
     <build>
