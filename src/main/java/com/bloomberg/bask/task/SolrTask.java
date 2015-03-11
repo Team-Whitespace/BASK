@@ -64,12 +64,12 @@ public class SolrTask implements InitableTask, StreamTask
             Date createdAt = new SimpleDateFormat("EEE MMM d HH:mm:ss Z yyyy").parse((String) tweet.get("created_at").toString());
             String dateUTC = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'").format(createdAt);
             doc.addField("created_at", dateUTC);
-    		doc.addField("user_profile_image_url", user.get("profile_image_url").toString());
-    		doc.addField("user_screen_name", user.get("screen_name").toString());
+    	    doc.addField("user_profile_image_url", user.get("profile_image_url").toString());
+    	    doc.addField("user_screen_name", user.get("screen_name").toString());
             doc.addField("tweet", message);
             logger.info("Sending tweet to Solr with id: "+tweet.get("id_str"));
             server.add(doc);
-    		server.commit();
+    	    server.commit();
             logger.info("Tweet sucessfully indexed by Solr: "+tweet.get("id_str"));
         }
         catch(Exception e)
