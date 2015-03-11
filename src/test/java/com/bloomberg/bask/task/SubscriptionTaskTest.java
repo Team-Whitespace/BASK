@@ -24,7 +24,7 @@ public class SubscriptionTaskTest {
 
         Envelope envelopeDoc = mock(Envelope.class);
         when(envelopeDoc.getMessage()).thenReturn("{\"text\": \"test abcd\", \"id_str\": \"1337\"}");
-        when(envelopeDoc.getStream()).thenReturn("documents");
+        when(envelopeDoc.getStream()).thenReturn("tweets");
 
         SystemProducer producer = mock(SystemProducer.class);
 

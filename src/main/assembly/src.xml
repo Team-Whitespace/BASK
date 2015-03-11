@@ -39,6 +39,13 @@
                 <include>*.properties</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>${basedir}/src/main/solr</directory>
+            <outputDirectory>solr</outputDirectory>
+            <includes>
+                <include>*</include>
+            </includes>
+        </fileSet>
     </fileSets>
     <dependencySets>
         <dependencySet>

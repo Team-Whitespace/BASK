@@ -66,7 +66,7 @@ public class SubscriptionTask implements InitableTask, StreamTask {
             case "alerts":
                 handleAlert(decoder.fromString(envelope.getMessage()));
                 break;
-            case "documents":
+            case "tweets":
                 Map<String, Object> document = decoder.fromString(envelope.getMessage());
                 if (document.get("id_str") != null && document.get("text") != null) {
                     String matches = decoder.toString(handleMatches(document));
