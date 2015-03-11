@@ -20,18 +20,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class SolrTask implements InitableTask, StreamTask
- {
+public class SolrTask implements InitableTask, StreamTask {
+    
     private static final Logger logger = LoggerFactory.getLogger(SolrTask.class);
     //protected HttpSolrServer server;
     protected ConcurrentUpdateSolrServer server;
     private JSONString decoder;
     
     @Override
-    public void init(Properties config)
-    {
-        try
-        {
+    public void init(Properties config) {
+        try {
             decoder = new JSONString();
             String url = config.getProperty("solr.url");
             int threadCount = Integer.parseInt(config.getProperty("solr.thread.count"));
@@ -40,19 +38,16 @@ public class SolrTask implements InitableTask, StreamTask
             //this.server = new HttpSolrServer(url);
             this.server = new ConcurrentUpdateSolrServer(url, queueSize, threadCount);
             logger.info("connected to Solr");
-        }
-        catch(Exception e)
-        {
+        } catch(Exception e) {
             logger.error("Exception in init method: \n", e);
         }
     }
     
     @Override
-    public void process(Envelope envelope, SystemProducer producer)
-    {
+    public void process(Envelope envelope, SystemProducer producer) {
+        
         String message = "";
-        try
-        {
+        try {
             message = envelope.getMessage();
             Map<String, Object> tweet = decoder.fromString(envelope.getMessage());
             Map<String, Object> user = (Map<String, Object>) tweet.get("user");
@@ -71,9 +66,7 @@ public class SolrTask implements InitableTask, StreamTask
             server.add(doc);
     	    server.commit();
             logger.info("Tweet sucessfully indexed by Solr: "+tweet.get("id_str"));
-        }
-        catch(Exception e)
-        {
+        } catch(Exception e) {
             logger.error("Exception in process method, message received: \n" +message, e);
         }
     }

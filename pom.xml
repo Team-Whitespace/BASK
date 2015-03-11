@@ -91,9 +91,9 @@
         </dependency>
 
         <dependency>
-	        <groupId>com.google.guava</groupId>
-	        <artifactId>guava</artifactId>
-	        <version>${guava.version}</version>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
         </dependency>
 
         <dependency>
@@ -107,41 +107,41 @@
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
-        
         </dependency>
+
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>${log4j.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-solrj</artifactId>
             <version>${solr.version}</version>
         </dependency>
-        
+
         <dependency>
-	        <groupId>org.apache.commons</groupId>
+            <groupId>org.apache.commons</groupId>
         	<artifactId>commons-lang3</artifactId>
-	        <version>${commons.version}</version>
+            <version>${commons.version}</version>
         </dependency>
-        
+
         <dependency>
-	        <groupId>commons-logging</groupId>
+            <groupId>commons-logging</groupId>
         	<artifactId>commons-logging</artifactId>
-	        <version>${commons-logging.version}</version>
+            <version>${commons-logging.version}</version>
         </dependency>
     </dependencies>
     <build>
