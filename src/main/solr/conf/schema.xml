@@ -8,7 +8,7 @@ Solr Schema for Twitter API
  <fields>
    <field name="_version_" type="long" indexed="true" stored="true" />
         
-   <field name="id" type="int" indexed="true" stored="true" required="true" multiValued="false" /> 
+   <field name="id" type="long" indexed="true" stored="true" required="true" multiValued="false" /> 
    <field name="id_str" type="string" indexed="true" stored="true" required="false" multiValued="false" /> 
    <field name="text" type="text_general" indexed="true" stored="true" required="true" multiValued="true"/>
    <field name="user_profile_image_url" type="string" indexed="true" stored="true"/>
