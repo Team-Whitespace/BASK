@@ -61,7 +61,6 @@ public class SolrTask implements InitableTask, StreamTask {
                 doc.addField("user_screen_name", user.get("screen_name").toString());
                 doc.addField("tweet", message);
                 server.add(doc);
-                server.commit();
                 logger.debug("Tweet sucessfully indexed by Solr: {}", tweet.get("id_str"));
             }
         } catch (SolrServerException|IOException|ParseException e) {
