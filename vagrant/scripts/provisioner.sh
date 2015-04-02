@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-kafka_mirror=http://mirror.ox.ac.uk/sites/rsync.apache.org/kafka/0.8.1.1/kafka_2.10-0.8.1.1.tgz
+kafka_mirror=http://mirror.ox.ac.uk/sites/rsync.apache.org/kafka/0.8.2.1/kafka_2.10-0.8.2.1.tgz
 solr_mirror=http://mirror.ox.ac.uk/sites/rsync.apache.org/lucene/solr/4.10.2/solr-4.10.2.tgz
 
 setup_kafka () {

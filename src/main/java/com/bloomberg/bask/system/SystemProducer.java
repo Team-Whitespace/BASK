@@ -2,9 +2,8 @@ package com.bloomberg.bask.system;
 
 import java.util.Properties;
 
-import kafka.javaapi.producer.Producer;
-import kafka.producer.KeyedMessage;
-import kafka.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,18 +12,18 @@ public class SystemProducer {
 
     private static final Logger logger = LoggerFactory.getLogger(SystemProducer.class);
 
-    private Producer<String, Object> producer;
+    private KafkaProducer<String, Object> producer;
 
     public SystemProducer(Properties props) {
-        producer = new Producer<String, Object>(new ProducerConfig(props));
+        this.producer = new KafkaProducer<String, Object>(props);
     }
 
-    public SystemProducer(Producer producer) {
+    public SystemProducer(KafkaProducer producer) {
         this.producer = producer;
     }
 
     public void send(Envelope envelope) {
-        producer.send(new KeyedMessage<String, Object>(envelope.getStream(),
+        producer.send(new ProducerRecord<String, Object>(envelope.getStream(),
                 envelope.getKey(), envelope.getMessage()));
     }
 

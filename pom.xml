@@ -18,7 +18,7 @@
         <jackson.version>2.5.1</jackson.version>
         <jopt.version>4.8</jopt.version>
         <junit.version>4.11</junit.version>
-        <kafka.version>0.8.1.1</kafka.version>
+        <kafka.version>0.8.2.1</kafka.version>
         <luwak.version>1.1.0-lucene48-rc1-SNAPSHOT</luwak.version>
         <mockito.version>1.9.5</mockito.version>
         <slf4j.version>1.7.7</slf4j.version>
@@ -70,6 +70,12 @@
             <classifier>test</classifier>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+	        <groupId>org.apache.kafka</groupId>
+	        <artifactId>kafka-clients</artifactId>
+	        <version>${kafka.version}</version>
+	    </dependency>
 
         <dependency>
             <groupId>net.sf.jopt-simple</groupId>

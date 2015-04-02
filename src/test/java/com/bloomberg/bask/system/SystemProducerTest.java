@@ -1,7 +1,7 @@
 package com.bloomberg.bask.system;
 
-import kafka.javaapi.producer.Producer;
-import kafka.producer.KeyedMessage;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 
 import org.junit.Test;
 
@@ -17,10 +17,10 @@ public class SystemProducerTest {
         Envelope envelope = mock(Envelope.class);
         when(envelope.getStream()).thenReturn("baz");
 
-        Producer producer = mock(Producer.class);
+        KafkaProducer producer = mock(KafkaProducer.class);
         SystemProducer sysProducer = new SystemProducer(producer);
         sysProducer.send(envelope);
 
-        verify(producer).send(any(KeyedMessage.class));
+        verify(producer).send(any(ProducerRecord.class));
     }
 }
